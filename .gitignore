@@ -39,3 +39,6 @@ yarn-error.log
 
 #phpstorm IDE
 /.idea
+
+#Authorise the database (what idiot stores it in var !!)
+!/var/data/
