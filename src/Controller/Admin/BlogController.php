@@ -70,6 +70,7 @@ class BlogController extends AbstractController
     public function show(Post $post): Response
     {
         // @todo: render the template with the post
+        return $this->render('admin/blog/show.html.twig', ['post' => $post]);
     }
 
     /**
