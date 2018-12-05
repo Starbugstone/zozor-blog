@@ -71,3 +71,5 @@ $ rm -rf node_modules\
 $ npm install
 $ npm audit fix
 ```
+
+Also need to check if the extension=intl is active in the php.ini file for all to work.
