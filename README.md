@@ -48,3 +48,26 @@ $ ./vendor/bin/simple-phpunit
 
 [1]: https://symfony.com/doc/current/reference/requirements.html
 [2]: https://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html
+
+====================
+
+The create project doesn't work, componants have security issues and composer won't update nicely.
+
+First 
+```bash
+$ composer update symfony/flex --no-plugins
+```
+
+then
+```bash
+$ composer update
+```
+
+Also need to take care of node and npm files. Somthing seams to be corrups with the install so delete, 
+reinstall and fix security issues
+
+```bash
+$ rm -rf node_modules\
+$ npm install
+$ npm audit fix
+```
