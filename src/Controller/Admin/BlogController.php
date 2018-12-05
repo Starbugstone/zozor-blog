@@ -55,6 +55,9 @@ class BlogController extends AbstractController
     public function new(Request $request): Response
     {
         // @todo: manage the form and the post.
+        $post = new Post();
+        $form = $this->createFormBuilder($post)
+            ->getForm();
 
         return $this->render('admin/blog/new.html.twig', [
             'post' => $post,
