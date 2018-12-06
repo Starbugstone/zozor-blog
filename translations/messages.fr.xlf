@@ -362,6 +362,11 @@
                 <source>rss.description</source>
                 <target>Derniers articles publiés sur le blog de démo Symfony</target>
             </trans-unit>
+
+            <trans-unit id="flash_success_new_post">
+                <source>flash_success_new_post</source>
+                <target>Nouveau post créer avec succes</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

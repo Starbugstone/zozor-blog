@@ -87,12 +87,35 @@ Public Function Show(post $post){
 **New Post**
 ```php
 // BlogController
-public function new(Request $request){
-    $post = new Post();
-        $form = $this->createFormBuilder($post)
-            ->getForm();
-}
+public function new(Request $request, UserInterface $user): Response //adding the UserInterface to get the user
+    {
+        //Creating the form
+        $post = new Post();
+        $form = $this->createForm(PostType::class, $post);
+
+        //Taking care of the submit
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            //Set the slug. TODO : Need to check if slug is unique
+            $post->setSlugFromTitle($post->getTitle());
+            //Set the author as logged in user
+            $post->setAuthor($user);
+            //saving to database
+            $this->manager->persist($post);
+            $this->manager->flush();
+            //Return to home admin page and send flash message
+            $this->addFlash('success', 'Post successfully created');
+            return $this->redirectToRoute('admin_index');
+        }
+
+        return $this->render('admin/blog/new.html.twig', [
+            'post' => $post,
+            'form' => $form->createView(),
+        ]);
+    }
 ```
+Also updated Admin/Blog/index.html.twig to include flash messages.
 
 ```php
 // src/form/PostType
@@ -103,11 +126,16 @@ $builder->add('save', SubmitType::class, [
 ])
 ```
 
-```xml
-// translations/messages.fr.xlf
-<trans-unit id="label.save">
-    <source>label.save</source>
-    <target>Sauvegarder</target>
-</trans-unit>
+```php
+// src/Entity/Post
+// Constructing the slug from the title
+public function setSlugFromTitle(?string $string):void
+    {
+        $slugger = new Slugger();
+        $this->slug = $slugger->slugify($string);
+    }
 ```
 
+
+
+Translation file messages.fr.xlf updated to include save button french translation and success flash messages.

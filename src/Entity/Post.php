@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Utils\Slugger;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -139,6 +140,12 @@ class Post
     public function setSlug(?string $slug): void
     {
         $this->slug = $slug;
+    }
+
+    public function setSlugFromTitle(?string $string):void
+    {
+        $slugger = new Slugger();
+        $this->slug = $slugger->slugify($string);
     }
 
     public function getContent(): ?string

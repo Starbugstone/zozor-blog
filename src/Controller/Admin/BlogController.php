@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Utils\Slugger;
+use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Controller used to manage blog contents in the backend.
@@ -22,6 +24,17 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BlogController extends AbstractController
 {
+
+    /**
+     * @var ObjectManager
+     */
+    private $manager;
+
+    public function __construct(ObjectManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
     /**
      * Lists all Post entities.
      *
@@ -52,11 +65,23 @@ class BlogController extends AbstractController
      * to constraint the HTTP methods each controller responds to (by default
      * it responds to all methods).
      */
-    public function new(Request $request): Response
+    public function new(Request $request, UserInterface $user): Response
     {
         // @todo: manage the form and the post.
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $post->setSlugFromTitle($post->getTitle());
+            $post->setAuthor($user);
+            $this->manager->persist($post);
+            $this->manager->flush();
+            //$this->addFlash('success', 'Post successfully created');
+            $this->addFlash('success', 'flash_success_new_post');
+            return $this->redirectToRoute('admin_index');
+        }
 
         return $this->render('admin/blog/new.html.twig', [
             'post' => $post,
