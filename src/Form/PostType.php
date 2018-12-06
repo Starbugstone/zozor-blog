@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Form\Type\DateTimePickerType;
 use App\Form\Type\TagsInputType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,6 +51,9 @@ class PostType extends AbstractType
             ->add('tags', TagsInputType::class, [
                 'label' => 'label.tags',
                 'required' => false,
+            ])
+            ->add('save', SubmitType::class, [
+                'attr' => array('class' => 'save')
             ])
         ;
     }

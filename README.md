@@ -49,7 +49,8 @@ $ ./vendor/bin/simple-phpunit
 [1]: https://symfony.com/doc/current/reference/requirements.html
 [2]: https://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html
 
-====================
+My Modifications
+------------
 
 The create project doesn't work, componants have security issues and composer won't update nicely.
 
@@ -73,3 +74,29 @@ $ npm audit fix
 ```
 
 Also need to check if the extension=intl is active in the php.ini file for all to work.
+
+Code
+------------
+**Showing Post**
+```php
+Public Function Show(post $post){
+    return $this->render('admin/blog/show.html.twig', ['post' => $post]);
+}
+```
+
+**New Post**
+```php
+public function new(Request $request){
+    $post = new Post();
+        $form = $this->createFormBuilder($post)
+            ->getForm();
+}
+```
+
+```php
+// src/form/PostType
+// Adding the save button
+$builder->add('save', SubmitType::class, [
+    'attr' => array('class' => 'save')
+])
+```
