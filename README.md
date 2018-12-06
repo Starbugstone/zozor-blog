@@ -86,6 +86,7 @@ Public Function Show(post $post){
 
 **New Post**
 ```php
+// BlogController
 public function new(Request $request){
     $post = new Post();
         $form = $this->createFormBuilder($post)
@@ -97,6 +98,16 @@ public function new(Request $request){
 // src/form/PostType
 // Adding the save button
 $builder->add('save', SubmitType::class, [
+    'label' => 'label.save',
     'attr' => array('class' => 'save')
 ])
 ```
+
+```xml
+// translations/messages.fr.xlf
+<trans-unit id="label.save">
+    <source>label.save</source>
+    <target>Sauvegarder</target>
+</trans-unit>
+```
+

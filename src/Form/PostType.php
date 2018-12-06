@@ -53,6 +53,7 @@ class PostType extends AbstractType
                 'required' => false,
             ])
             ->add('save', SubmitType::class, [
+                'label' => 'label.save',
                 'attr' => array('class' => 'save')
             ])
         ;
