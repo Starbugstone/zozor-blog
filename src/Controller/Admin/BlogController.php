@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -29,10 +31,17 @@ class BlogController extends AbstractController
      * @var ObjectManager
      */
     private $manager;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
 
-    public function __construct(ObjectManager $manager)
+
+    public function __construct(ObjectManager $manager, TokenStorageInterface $tokenStorage)
     {
         $this->manager = $manager;
+
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -65,7 +74,7 @@ class BlogController extends AbstractController
      * to constraint the HTTP methods each controller responds to (by default
      * it responds to all methods).
      */
-    public function new(Request $request, UserInterface $user): Response
+    public function new(Request $request): Response
     {
         // @todo: manage the form and the post.
         $post = new Post();
@@ -74,11 +83,9 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $post->setSlugFromTitle($post->getTitle());
-            $post->setAuthor($user);
+            $post->setAuthor($this->tokenStorage->getToken()->getUser());
             $this->manager->persist($post);
             $this->manager->flush();
-            //$this->addFlash('success', 'Post successfully created');
             $this->addFlash('success', 'flash_success_new_post');
             return $this->redirectToRoute('admin_index');
         }
@@ -112,7 +119,7 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setSlug(Slugger::slugify($post->getTitle()));
+            //$post->setSlug(Slugger::slugify($post->getTitle())); //No longer needed with Gedmo
             // @todo: persist the update
 
             $this->addFlash('success', 'post.updated_successfully');

@@ -97,15 +97,13 @@ public function new(Request $request, UserInterface $user): Response //adding th
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            //Set the slug. TODO : Need to check if slug is unique
-            $post->setSlugFromTitle($post->getTitle());
             //Set the author as logged in user
-            $post->setAuthor($user);
+            $post->setAuthor($this->tokenStorage->getToken()->getUser());
             //saving to database
             $this->manager->persist($post);
             $this->manager->flush();
             //Return to home admin page and send flash message
-            $this->addFlash('success', 'Post successfully created');
+            $this->addFlash('success', 'flash_success_new_post');
             return $this->redirectToRoute('admin_index');
         }
 
@@ -126,16 +124,20 @@ $builder->add('save', SubmitType::class, [
 ])
 ```
 
+Using 
+composer require stof/doctrine-extensions-bundle for the slug generation.
 ```php
 // src/Entity/Post
 // Constructing the slug from the title
-public function setSlugFromTitle(?string $string):void
-    {
-        $slugger = new Slugger();
-        $this->slug = $slugger->slugify($string);
-    }
+//comment for the slug variable.
+/**
+ * @var string
+ *
+ * @Gedmo\Slug(fields={"title"})
+ * @ORM\Column(type="string")
+ */
+private $slug;
 ```
-
 
 
 Translation file messages.fr.xlf updated to include save button french translation and success flash messages.
