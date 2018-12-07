@@ -121,7 +121,7 @@ class BlogController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug(Slugger::slugify($post->getTitle())); //No longer needed with Gedmo
             // @todo: persist the update
-            $this->manager->persist($post);
+            // $this->manager->persist($post);
             $this->manager->flush();
 
             $this->addFlash('success', 'post.updated_successfully');
@@ -154,6 +154,8 @@ class BlogController extends AbstractController
         $post->getTags()->clear();
 
         // @todo: delete the post
+        $this->manager->remove($post);
+        $this->manager->flush();
 
         $this->addFlash('success', 'post.deleted_successfully');
 
