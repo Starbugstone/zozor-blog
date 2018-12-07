@@ -76,13 +76,13 @@ class BlogController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        // @todo: manage the form and the post.
+        // @done: manage the form and the post.
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $post->setAuthor($this->tokenStorage->getToken()->getUser());
             $this->manager->persist($post);
             $this->manager->flush();
@@ -103,8 +103,10 @@ class BlogController extends AbstractController
      */
     public function show(Post $post): Response
     {
-        // @todo: render the template with the post
-        return $this->render('admin/blog/show.html.twig', ['post' => $post]);
+        // @done: render the template with the post
+        return $this->render('admin/blog/show.html.twig', [
+            'post' => $post
+        ]);
     }
 
     /**
@@ -120,8 +122,7 @@ class BlogController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             //$post->setSlug(Slugger::slugify($post->getTitle())); //No longer needed with Gedmo
-            // @todo: persist the update
-            // $this->manager->persist($post);
+            // @done: persist the update, well don't realy need to. A flush will update the DB
             $this->manager->flush();
 
             $this->addFlash('success', 'post.updated_successfully');
@@ -129,7 +130,7 @@ class BlogController extends AbstractController
             return $this->redirectToRoute('admin_post_edit', ['id' => $post->getId()]);
         }
 
-        // @todo rendrer the post and form
+        // @done rendrer the post and form
         return $this->render('admin/blog/edit.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
@@ -153,7 +154,7 @@ class BlogController extends AbstractController
         // because foreign key support is not enabled by default in SQLite
         $post->getTags()->clear();
 
-        // @todo: delete the post
+        // @done: delete the post
         $this->manager->remove($post);
         $this->manager->flush();
 

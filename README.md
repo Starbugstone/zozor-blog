@@ -84,25 +84,41 @@ Public Function Show(post $post){
 }
 ```
 
-**New Post**
+**Blog Controller Modifications**
 ```php
 // BlogController
-public function new(Request $request, UserInterface $user): Response //adding the UserInterface to get the user
+
+// injecting the objectmanager and userinterface in the constructor
+
+/**
+ * @var ObjectManager
+ */
+private $manager;
+/**
+ * @var TokenStorageInterface
+ */
+private $tokenStorage;
+
+
+public function __construct(ObjectManager $manager, TokenStorageInterface $tokenStorage)
+{
+    $this->manager = $manager;
+
+    $this->tokenStorage = $tokenStorage;
+}
+
+ public function new(Request $request): Response
     {
-        //Creating the form
+        // @done: manage the form and the post.
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
 
-        //Taking care of the submit
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
-            //Set the author as logged in user
+        if ($form->isSubmitted() && $form->isValid()) {
             $post->setAuthor($this->tokenStorage->getToken()->getUser());
-            //saving to database
             $this->manager->persist($post);
             $this->manager->flush();
-            //Return to home admin page and send flash message
             $this->addFlash('success', 'flash_success_new_post');
             return $this->redirectToRoute('admin_index');
         }
@@ -112,17 +128,76 @@ public function new(Request $request, UserInterface $user): Response //adding th
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * Finds and displays a Post entity.
+     *
+     * @Route("/{id<\d+>}", methods={"GET"}, name="admin_post_show")
+     */
+    public function show(Post $post): Response
+    {
+        // @done: render the template with the post
+        return $this->render('admin/blog/show.html.twig', [
+            'post' => $post
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/{id<\d+>}/edit",methods={"GET", "POST"}, name="admin_post_edit")
+     * @IsGranted("edit", subject="post", message="Posts can only be edited by their authors.")
+     */
+    public function edit(Request $request, Post $post): Response
+    {
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //$post->setSlug(Slugger::slugify($post->getTitle())); //No longer needed with Gedmo
+            // @done: persist the update
+            $this->manager->flush();
+
+            $this->addFlash('success', 'post.updated_successfully');
+
+            return $this->redirectToRoute('admin_post_edit', ['id' => $post->getId()]);
+        }
+
+        // @done rendrer the post and form
+        return $this->render('admin/blog/edit.html.twig', [
+            'post' => $post,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Deletes a Post entity.
+     *
+     * @Route("/{id}/delete", methods={"POST"}, name="admin_post_delete")
+     * @IsGranted("delete", subject="post")
+     */
+    public function delete(Request $request, Post $post): Response
+    {
+        if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
+            return $this->redirectToRoute('admin_post_index');
+        }
+
+        // Delete the tags associated with this blog post. This is done automatically
+        // by Doctrine, except for SQLite (the database used in this application)
+        // because foreign key support is not enabled by default in SQLite
+        $post->getTags()->clear();
+
+        // @done: delete the post
+        $this->manager->remove($post);
+        $this->manager->flush();
+
+        $this->addFlash('success', 'post.deleted_successfully');
+
+        return $this->redirectToRoute('admin_post_index');
+    }
 ```
 Also updated Admin/Blog/index.html.twig to include flash messages.
 
-```php
-// src/form/PostType
-// Adding the save button
-$builder->add('save', SubmitType::class, [
-    'label' => 'label.save',
-    'attr' => array('class' => 'save')
-])
-```
 
 Using 
 composer require stof/doctrine-extensions-bundle for the slug generation.
@@ -138,6 +213,3 @@ composer require stof/doctrine-extensions-bundle for the slug generation.
  */
 private $slug;
 ```
-
-
-Translation file messages.fr.xlf updated to include save button french translation and success flash messages.

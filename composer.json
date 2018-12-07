@@ -20,13 +20,13 @@
         "symfony/framework-bundle": "^4.1",
         "symfony/intl": "^4.1",
         "symfony/monolog-bundle": "^3.1",
+        "symfony/phpunit-bridge": "*@dev",
         "symfony/polyfill-php72": "^1.8",
         "symfony/security-bundle": "^4.1",
         "symfony/swiftmailer-bundle": "^3.1",
         "symfony/translation": "^4.1",
         "symfony/twig-bundle": "^4.1",
         "symfony/validator": "^4.1",
-        "symfony/yaml": "^4.1",
         "twig/extensions": "^1.5",
         "white-october/pagerfanta-bundle": "^1.1"
     },
@@ -38,7 +38,6 @@
         "symfony/css-selector": "^4.1",
         "symfony/debug-bundle": "^4.1",
         "symfony/dotenv": "^4.1",
-        "symfony/phpunit-bridge": "^4.1",
         "symfony/stopwatch": "^4.1",
         "symfony/web-profiler-bundle": "^4.1",
         "symfony/web-server-bundle": "^4.1"
@@ -75,6 +74,12 @@
     "extra": {
         "symfony": {
             "allow-contrib": true
+        }
+    },
+    "repositories": {
+        "phpunit-bridge": {
+            "type": "path",
+            "url": "F:\\Xampp\\htdocs\\symfony\\zozor-blog\\vendor\\symfony\\phpunit-bridge"
         }
     }
 }
