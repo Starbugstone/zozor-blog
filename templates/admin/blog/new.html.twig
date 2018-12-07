@@ -5,7 +5,7 @@
 {% block main %}
     <h1>{{ 'title.post_new'|trans }}</h1>
 
-    {# todo: finish form integration, need to add submit #}
+    {# done: finish form integration #}
     {{ include('admin/blog/_form.html.twig', {
         form: form,
         include_back_to_home_link: true,
