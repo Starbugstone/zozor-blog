@@ -6,7 +6,11 @@
     <h1>{{ 'title.post_new'|trans }}</h1>
 
     {# todo: finish form integration, need to add submit #}
-    {{ form(form) }}
+    {{ include('admin/blog/_form.html.twig', {
+        form: form,
+        button_label: 'action.save'|trans,
+        include_back_to_home_link: true,
+    }, with_context = false) }}
 {% endblock %}
 
 {% block sidebar %}

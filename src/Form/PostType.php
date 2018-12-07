@@ -52,10 +52,10 @@ class PostType extends AbstractType
                 'label' => 'label.tags',
                 'required' => false,
             ])
-            ->add('save', SubmitType::class, [
+            /*->add('save', SubmitType::class, [
                 'label' => 'label.save',
                 'attr' => array('class' => 'save')
-            ])
+            ])*/
         ;
     }
 
