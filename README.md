@@ -228,9 +228,9 @@ cd zozor-blog
 
 #Installing the dependancies
 composer install
-npm install
 
 # create the database
+mkdir var\data
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:create
 
