@@ -11,6 +11,8 @@ cd zozor-blog
 
 #Installing the dependancies
 composer install
+#not required for prod
+npm install
 
 # create the database
 mkdir var\data
