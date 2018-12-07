@@ -1,53 +1,34 @@
-Zozor's Blog
-============
-
-The Zozor's Blog is an application used a learning support for the Symfony 4 course available in OpenClassRooms platform.
-The entire application is based on the []Symfony Demo Application](https://github.com/symfony/demo), which is a reference application created to show how
-to develop Symfony applications following the recommended best practices.
-
-Requirements
-------------
-
-  * PHP 7.1.3 or higher;
-  * PDO-SQLite PHP extension enabled;
-  * and the [usual Symfony application requirements][1].
-
-Installation
-------------
-
-Execute this command to install the project:
+To run the blog with modifications from git :
 
 ```bash
-$ composer create-project mickaelandrieu/learn-symfony
+#Make sure sqlite is enabled in PHP (check with php -m, should have sqlite3 and pdo_sqlite)
+
+#cloning the repo
+mkdir StarbugStoneDir
+cd StarbugStoneDir
+git clone https://github.com/Starbugstone/zozor-blog.git
+cd zozor-blog
+
+#Installing the dependancies
+composer install
+
+# create the database
+mkdir var\data
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:create
+
+#Load demo info into database
+php bin/console doctrine:fixtures:load
+
+#copy to test unit
+cp var\data\blog.sqlite var\data\blog_test.sqlite
+
+#run test
+vendor\bin\simple-phpunit.bat
+
+#run the server to test yourself
+php bin/console server:run
 ```
-
-Usage
------
-
-There's no need to configure anything to run the application. Just execute this
-command to run the built-in web server and access the application in your
-browser at <http://localhost:8000>:
-
-```bash
-$ cd learn-symfony/
-$ php bin/console server:run
-```
-
-Alternatively, you can [configure a fully-featured web server][2] like Nginx
-or Apache to run the application.
-
-Tests
------
-
-Execute this command to run tests:
-
-```bash
-$ cd symfony-demo/
-$ ./vendor/bin/simple-phpunit
-```
-
-[1]: https://symfony.com/doc/current/reference/requirements.html
-[2]: https://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html
 
 My Modifications
 ------------
@@ -73,16 +54,10 @@ $ npm install
 $ npm audit fix
 ```
 
-Also need to check if the extension=intl is active in the php.ini file for all to work.
+Also need to check if the extension=intl is active in the php.ini file for all to work. Also check if pdo_sqlite and sqlite3 extensions are active
 
 Code
 ------------
-**Showing Post**
-```php
-Public Function Show(post $post){
-    return $this->render('admin/blog/show.html.twig', ['post' => $post]);
-}
-```
 
 **Blog Controller Modifications**
 ```php
@@ -212,37 +187,4 @@ composer require stof/doctrine-extensions-bundle for the slug generation.
  * @ORM\Column(type="string")
  */
 private $slug;
-```
-
-
-To run the motor :
-
-```bash
-#Make sure sqlite is enabled in PHP (check with php -m, should have sqlite3 and pdo_sqlite)
-
-#cloning the repo
-mkdir StarbugStoneDir
-cd StarbugStoneDir
-git clone https://github.com/Starbugstone/zozor-blog.git
-cd zozor-blog
-
-#Installing the dependancies
-composer install
-
-# create the database
-mkdir var\data
-php bin/console doctrine:database:create
-php bin/console doctrine:schema:create
-
-#Load demo info into database
-php bin/console doctrine:fixtures:load
-
-#copy to test unit
-cp var\data\blog.sqlite var\data\blog_test.sqlite
-
-#run test
-vendor\bin\simple-phpunit.bat
-
-#run the server to test yourself
-php bin/console server:run
 ```
