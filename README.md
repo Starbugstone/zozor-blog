@@ -213,3 +213,36 @@ composer require stof/doctrine-extensions-bundle for the slug generation.
  */
 private $slug;
 ```
+
+
+To run the motor :
+
+```bash
+#Make sure sqlite is enabled in PHP (check with php -m, should have sqlite3 and pdo_sqlite)
+
+#cloning the repo
+mkdir StarbugStoneDir
+cd StarbugStoneDir
+git clone https://github.com/Starbugstone/zozor-blog.git
+cd zozor-blog
+
+#Installing the dependancies
+composer install
+npm install
+
+# create the database
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:create
+
+#Load demo info into database
+php bin/console doctrine:fixtures:load
+
+#copy to test unit
+cp var\data\blog.sqlite var\data\blog_test.sqlite
+
+#run test
+vendor\bin\simple-phpunit.bat
+
+#run the server to test yourself
+php bin/console server:run
+```
